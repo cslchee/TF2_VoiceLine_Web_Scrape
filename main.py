@@ -23,6 +23,7 @@ def main():
         new_dir = f'{mainDir}/{folder_name}/{class_type}'
         if not os.path.isdir(new_dir):
             os.mkdir(new_dir)
+
         for vl_type in ('responses', 'voice commands'):
             new_dir = f'{mainDir}/{folder_name}/{class_type}/{vl_type.title()}'
             if not os.path.isdir(new_dir):
@@ -41,12 +42,14 @@ def main():
                         text_edit = link.text
                         for remove_char in ('"','?',',','[',']','*','(apostrophe) ','/','\\','|',':','>','<'):
                             text_edit = text_edit.replace(remove_char,'')
-                        if 'Translation' in text_edit: #medic lines
-                            text_edit = text_edit[:text_edit.index(' (Translation')]
+                        if 'Translation' in text_edit:
+                            text_edit = text_edit[:text_edit.index('Translation')]
                         text_edit = text_edit.replace('  ', ' ')
 
                         file_name = hrefStr.split('/')[-1].replace('.wav','') + '__' + text_edit + '.wav'
                         file_name = file_name.replace('..wav','.wav') #redundant period next to '.wav'
+                        if len(file_name) > 165: # A few of soldier's lines are really long and won't download unless shortened
+                            file_name = file_name[:165] + '___.wav'
 
                         #Prepare and download
                         wavDir = f'{new_dir}/{file_name}'
@@ -60,7 +63,7 @@ def main():
 
                             sleep(0.5) #Don't overwhelm the website
                         else:
-                            print(f'\tAlready have: {file_name}')
+                            print(f'\tAlready have: {file_name}  --  ({len(file_name)})')
 
 
 if __name__ == '__main__':
